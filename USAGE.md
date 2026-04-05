@@ -137,6 +137,37 @@ cd rust
 cargo run -p mock-anthropic-service -- --bind 127.0.0.1:0
 ```
 
+## Troubleshooting
+
+### Windows Application Control Issues
+
+If you encounter build failures with `Application Control policy has blocked this file (os error 4551)`, this is due to Windows security policies blocking Rust build scripts.
+
+**Solution: Use an alternative build directory**
+
+The issue occurs when Windows Application Control blocks build scripts in certain paths. The working solution is to use `C:\temp\rust-build` as the target directory:
+
+```bash
+cd rust
+export CARGO_TARGET_DIR="C:/temp/rust-build"
+cargo build --workspace
+```
+
+Or on PowerShell:
+```powershell
+cd rust
+$env:CARGO_TARGET_DIR = "C:\temp\rust-build"
+cargo build --workspace
+```
+
+**To make this permanent**, add to your shell profile:
+- Bash: `echo 'export CARGO_TARGET_DIR="C:/temp/rust-build"' >> ~/.bashrc`
+- PowerShell: Add `$env:CARGO_TARGET_DIR = "C:\temp\rust-build"` to your profile
+
+The CLI binary will then be available at `C:/temp/rust-build/debug/claw` (or `claw.exe` on Windows).
+
+**Note**: Other target directories may also work, but `C:\temp\rust-build` has been confirmed to bypass Application Control restrictions.
+
 ## Verification
 
 ```bash
